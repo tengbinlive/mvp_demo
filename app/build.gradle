@@ -31,11 +31,11 @@ android {
 
     //---指定签名---
     signingConfigs {
-        boqii {
-            storeFile file("../distribution/boqii")
-            storePassword "boqii3124"
-            keyAlias "boqii_alias"
-            keyPassword "boqii3124"
+          demo {
+            storeFile file("../aibao_demo.jks");
+            storePassword "aibao_demo"
+            keyAlias "aibao_demo"
+            keyPassword "aibao_demo"
         }
     }
 
@@ -54,7 +54,7 @@ android {
             useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
-            signingConfig signingConfigs.boqii
+            signingConfig signingConfigs.demo
         }
 
         alpha {
@@ -70,7 +70,7 @@ android {
             useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
-            signingConfig signingConfigs.boqii
+            signingConfig signingConfigs.demo
         }
 
         release {
@@ -87,7 +87,7 @@ android {
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
-            signingConfig signingConfigs.boqii
+            signingConfig signingConfigs.demo
         }
 
     }
