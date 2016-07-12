@@ -1,0 +1,231 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.droidtitan.lintcleaner'
+
+//butterknife
+apply plugin: 'android-apt'
+
+// Manifest version information!
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 0
+def versionBuild = 1// bump for dogfood builds, public betas, etc.
+
+android {
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.boqii.plant"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "v${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    //---指定签名---
+    signingConfigs {
+        boqii {
+            storeFile file("../distribution/boqii")
+            storePassword "boqii3124"
+            keyAlias "boqii_alias"
+            keyPassword "boqii3124"
+        }
+    }
+
+    buildTypes {
+
+        debug {
+            buildConfigField "String", "API_HOST", "\"http://www.mytian.com.cn/\""//API Host
+            buildConfigField "boolean", "LOG_DEBUG", "true"// log info
+            buildConfigField "boolean", "STRICTMODE", "true"// StrictModeWrapper
+            buildConfigField "boolean", "CHANNEL_DEBUG", "true"// channel info
+            debuggable true
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            useProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+            signingConfig signingConfigs.boqii
+        }
+
+        alpha {
+            buildConfigField "String", "API_HOST", "\"http://www.mytian.com.cn/\""//API Host
+            buildConfigField "boolean", "LOG_DEBUG", "false"// log info
+            buildConfigField "boolean", "STRICTMODE", "false"// StrictModeWrapper
+            buildConfigField "boolean", "CHANNEL_DEBUG", "false"// channel info
+            debuggable true
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            useProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+            signingConfig signingConfigs.boqii
+        }
+
+        release {
+            buildConfigField "String", "API_HOST", "\"http://www.mytian.com.cn/\""//API Host
+            buildConfigField "boolean", "LOG_DEBUG", "false"// log info
+            buildConfigField "boolean", "STRICTMODE", "false"// StrictModeWrapper
+            buildConfigField "boolean", "CHANNEL_DEBUG", "false"// channel info
+            debuggable false
+            minifyEnabled true
+            zipAlignEnabled true
+            useProguard true
+            // 移除无用的resource文件
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+            signingConfig signingConfigs.boqii
+        }
+
+    }
+
+    // If you need to add more flavors, consider using flavor dimensions.
+    productFlavors {
+        mock {
+            applicationIdSuffix = ".mock"
+        }
+        prod {
+
+        }
+    }
+
+    // Remove mockRelease as it's not needed.
+    android.variantFilter { variant ->
+        if (variant.buildType.name.equals('release')
+                && variant.getFlavors().get(0).name.equals('mock')) {
+            variant.setIgnore(true);
+        }
+    }
+
+    // Always show the result of every unit test, even if it passes.
+    testOptions.unitTests.all {
+        testLogging {
+            events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+    lintOptions {
+        abortOnError false
+        disable 'InvalidPackage'
+    }
+
+    dexOptions {
+        incremental = true;
+        preDexLibraries = false
+        javaMaxHeapSize "4g"
+    }
+
+    useLibrary 'org.apache.http.legacy'
+
+}
+
+repositories {
+    flatDir {
+        dirs 'libs' //this way we can find the .aar file in libs folder
+    }
+}
+
+lintCleaner {
+    // Exclude specific files
+    exclude = ['com_crashlytics_export_strings.xml', 'config.xml']
+
+    // Ability to ignore all resource files. False by default.
+    ignoreResFiles = true
+
+    // Default path is build/outputs/lint-results.xml
+    lintXmlFilePath = 'path/to/lint-results.xml'
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    alphaCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+
+    //rxandroid
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
+
+    //retrofit2
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+
+    //fastjson
+    compile 'com.alibaba:fastjson:1.1.52.android'
+
+    //日志
+    compile 'com.orhanobut:logger:1.15'
+
+    //greendao 数据库
+    compile 'org.greenrobot:greendao:2.2.1'
+
+    //滑动返回
+    compile 'me.imid.swipebacklayout.lib:library:1.0.0'
+
+    //butterknife
+    compile 'com.jakewharton:butterknife:8.2.1'
+    apt 'com.jakewharton:butterknife-compiler:8.2.1'
+
+    //fresco
+    compile "com.facebook.fresco:fresco:0.9.0+"
+    compile 'com.facebook.fresco:imagepipeline-okhttp:0.9.0+'
+
+    //list item 动画
+    compile 'com.nhaarman.listviewanimations:lib-core:3.1.0@aar'
+
+    //load
+    compile 'com.wang.avi:library:1.0.5'
+
+    compile 'com.nineoldandroids:library:2.4.0'
+
+    compile project(path: ':lib_utils')
+    compile(name: 'niftymodaldialog-release', ext: 'aar')
+
+    // App's dependencies, including test
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:design:$rootProject.supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
+    compile "com.android.support.test.espresso:espresso-idling-resource:$rootProject.espressoVersion"
+
+    // Dependencies for local unit tests
+    testCompile "junit:junit:$rootProject.ext.junitVersion"
+    testCompile "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
+    testCompile "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
+
+    // Android Testing Support Library's runner and rules
+    androidTestCompile "com.android.support.test:runner:$rootProject.ext.runnerVersion"
+    androidTestCompile "com.android.support.test:rules:$rootProject.ext.runnerVersion"
+
+    // Dependencies for Android unit tests
+    androidTestCompile "junit:junit:$rootProject.ext.junitVersion"
+    androidTestCompile "org.mockito:mockito-core:$rootProject.ext.mockitoVersion"
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
+
+    // Espresso UI Testing
+    androidTestCompile "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
+    androidTestCompile ("com.android.support.test.espresso:espresso-contrib:$rootProject.espressoVersion")
+    androidTestCompile "com.android.support.test.espresso:espresso-intents:$rootProject.espressoVersion"
+
+    // Resolve conflicts between main and test APK:
+    androidTestCompile "com.android.support:support-annotations:$rootProject.supportLibraryVersion"
+    androidTestCompile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
+    androidTestCompile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+
+}

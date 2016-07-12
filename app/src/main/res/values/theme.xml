@@ -1,0 +1,22 @@
+<resources>
+
+    <!--背景透明-->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <!--背景透明-->
+    <style name="AppThemeTN" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <!--背景不透明-->
+    <style name="AppThemeWTN" parent="AppTheme">
+        <item name="android:windowIsTranslucent">false</item>
+    </style>
+
+</resources>
