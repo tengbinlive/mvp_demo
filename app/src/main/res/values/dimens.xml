@@ -1,0 +1,30 @@
+<resources>
+    <!--layout-->
+    <dimen name="content_gap">16dp</dimen>
+    <dimen name="content_gap_small">5dp</dimen>
+    <dimen name="content_left_margin">16dp</dimen>
+    <dimen name="content_right_margin">16dp</dimen>
+    <dimen name="content_gap_big">20dp</dimen>
+    <dimen name="content_1dp">1dp</dimen>
+    <dimen name="content_1px">1px</dimen>
+
+    <!--font-->
+    <dimen name="font_actionbar">17sp</dimen>
+    <dimen name="font_actionbar_title">17sp</dimen>
+    <dimen name="font_medium">14sp</dimen>
+    <dimen name="font_least">12sp</dimen>
+    <dimen name="font_small">13sp</dimen>
+    <dimen name="font_big">16sp</dimen>
+    <dimen name="font_btn">15sp</dimen>
+
+    <!--progress-->
+    <dimen name="progress_radius">30dp</dimen>
+    <dimen name="progress_thickness">3dp</dimen>
+    <dimen name="progress_radius_big">45dp</dimen>
+
+    <!--button-->
+    <dimen name="button_bt_height">45dp</dimen>
+
+    <dimen name="elevation_height">2dp</dimen>
+
+</resources>
