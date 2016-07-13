@@ -14,7 +14,7 @@ public class LauncherActivity extends BaseActivity {
 
 
     @Override
-    public int getContentView() {
+    public int getLayoutID() {
         return R.layout.launcher_act;
     }
 

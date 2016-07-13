@@ -67,24 +67,24 @@ public class LoginFragment extends BaseFragment implements LoginContract.View {
     }
 
     @OnClick(R.id.login)
-    void login(){
-        mPresenter.login("18217612175","111111");
+    void login() {
+        mPresenter.login("18217612175", "111111");
     }
 
 
     @Override
     public void showProgress() {
-
+        dialogShow();
     }
 
     @Override
     public void hideProgress() {
-
+        dialogDismiss();
     }
 
     @Override
     public void setUsernameError() {
-
+        showToast(R.string.load_error);
     }
 
     @Override

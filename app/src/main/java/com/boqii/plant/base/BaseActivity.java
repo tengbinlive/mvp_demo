@@ -78,7 +78,7 @@ public abstract class BaseActivity extends SwipeBackActivity implements EInitDat
         int colos = getIntent().getIntExtra(STATUSBAR_COLOS, 0);
         setStatusBar(colos);
         mInflater = LayoutInflater.from(this);
-        setContentView(getContentView());
+        setContentView(getLayoutID());
         ButterKnife.bind(this);
         initAbsActionBar();
         if (null != viewTitleBar) {
@@ -213,7 +213,7 @@ public abstract class BaseActivity extends SwipeBackActivity implements EInitDat
         toolbar_intermediate_tv.setText(value);
     }
 
-    public abstract int getContentView();
+    public abstract int getLayoutID();
 
     @Override
     public void onDestroy() {

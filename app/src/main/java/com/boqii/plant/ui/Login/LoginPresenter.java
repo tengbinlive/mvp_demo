@@ -18,6 +18,7 @@ package com.boqii.plant.ui.Login;
 
 import android.support.annotation.NonNull;
 
+import com.boqii.plant.api.ApiException;
 import com.boqii.plant.api.ApiHelper;
 import com.boqii.plant.api.helper.Result;
 import com.boqii.plant.api.service.Api;
@@ -65,9 +66,9 @@ public class LoginPresenter implements LoginContract.Presenter {
                 if (!mLoginView.isActive()) {
                     return;
                 }
-//                    根据  ((ApiException) e).getResultCode();
-//                    mLoginView.onPasswordError();
-//                    mLoginView.onUsernameError();
+                mLoginView.hideProgress();
+                User user = (User) ((ApiException) e).getResult().getParent();
+                mLoginView.navigateToHome(user);
             }
 
             @Override

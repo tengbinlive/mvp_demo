@@ -29,7 +29,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     @Override
-    public int getContentView() {
+    public int getLayoutID() {
         return R.layout.login_act;
     }
 

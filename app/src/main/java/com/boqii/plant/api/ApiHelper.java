@@ -23,4 +23,11 @@ public class ApiHelper {
                 .map(new ResultFunc<T>())
                 .subscribe(s);
     }
+
+    public static <T> void wrap(Observable<Result<T>> o) {
+        o.subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new ResultFunc<T>());
+    }
 }

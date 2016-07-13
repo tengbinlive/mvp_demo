@@ -1,13 +1,12 @@
 package com.boqii.plant.api.helper;
 
-import android.text.TextUtils;
-
 import com.boqii.plant.App;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
+import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -29,7 +28,24 @@ public class CustomerOkHttpClient {
         // set your desired log level
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        Interceptor mInterceptor = new Interceptor() {
+        // add your other interceptors …
+        // add logging as last interceptor
+        client = new OkHttpClient.Builder()
+                .readTimeout(7676, TimeUnit.MILLISECONDS)
+                .connectTimeout(7676, TimeUnit.MILLISECONDS)
+                .addInterceptor(addHeaderInterceptor())
+                .addInterceptor(addCacheInterceptor())
+                .addInterceptor(logging)
+                .cache(cache)
+                .build();
+    }
+
+
+    /**
+     * 设置头
+     */
+    private static Interceptor addHeaderInterceptor() {
+        return new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 return chain.proceed(chain.request().newBuilder()
@@ -37,35 +53,41 @@ public class CustomerOkHttpClient {
                         .build());
             }
         };
+    }
 
-        Interceptor cacheInterceptor = new Interceptor() {
+
+    /**
+     * 设置缓存
+     */
+    private static Interceptor addCacheInterceptor() {
+        return new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Request request = chain.request();
-                Response response = chain.proceed(request);
-
-                String cacheControl = request.cacheControl().toString();
-                if (TextUtils.isEmpty(cacheControl)) {
-                    cacheControl = "public, max-age=60 ,max-stale=2419200";
+                if (!App.isNetworkAvailable()) {
+                    request = request.newBuilder()
+                            .cacheControl(CacheControl.FORCE_CACHE)
+                            .build();
                 }
-                return response.newBuilder()
-                        .header("Cache-Control", cacheControl)
-                        .removeHeader("Pragma")
-                        .build();
+                Response response = chain.proceed(request);
+                if (App.isNetworkAvailable()) {
+                    int maxAge = 0; // 有网络时 设置缓存超时时间0个小时
+                    response.newBuilder()
+                            .header("Cache-Control", "public, max-age=" + maxAge)
+                            .removeHeader("Pragma")// 清除头信息，因为服务器如果不支持，会返回一些干扰信息，不清除下面无法生效
+                            .build();
+                } else {
+                    int maxStale = 60 * 60 * 24 * 7; // 无网络时，设置超时为1周
+                    response.newBuilder()
+                            .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
+                            .removeHeader("Pragma")
+                            .build();
+                }
+                return response;
             }
         };
-
-        // add your other interceptors …
-        // add logging as last interceptor
-        client = new OkHttpClient.Builder()
-                .readTimeout(7676, TimeUnit.MILLISECONDS)
-                .connectTimeout(7676, TimeUnit.MILLISECONDS)
-                .addInterceptor(mInterceptor)
-                .addInterceptor(logging)
-                .addNetworkInterceptor(new HttpCacheInterceptor())
-                .cache(cache)
-                .build();
     }
+
 
     public static OkHttpClient getClient() {
         if (client == null) {

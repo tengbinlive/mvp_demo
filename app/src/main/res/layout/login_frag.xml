@@ -2,7 +2,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pink"
-    android:gravity="center"
     android:orientation="vertical">
 
     <Button
@@ -11,11 +10,13 @@
         android:layout_height="@dimen/button_bt_height"
         android:background="@drawable/button_bg_theme"
         android:elevation="@dimen/elevation_height"
+        android:layout_centerInParent="true"
         android:text="login" />
 
     <TextView
         android:id="@+id/info"
         android:layout_below="@+id/login"
+        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </RelativeLayout>

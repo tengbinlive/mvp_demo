@@ -14,7 +14,7 @@ public class ResultFunc<T> implements Func1<Result<T>, T> {
 
     @Override
     public T call(Result<T> result) {
-        if (ApiCode.SUCCESS_CODE.equals(result.getResultCode())) {
+        if (!ApiCode.SUCCESS_CODE.equals(result.getResultCode())) {
             ApiException apiException = new ApiException(result.getResultCode());
             apiException.setResult(result);
             throw apiException;

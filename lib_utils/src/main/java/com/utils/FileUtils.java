@@ -29,7 +29,7 @@ public final class FileUtils {
         /**
          * 根目录
          */
-        public static String ROOT_DIR = "";
+        public static String ROOT_DIR = "/app";
         /**
          * 下载目录
          */

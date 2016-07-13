@@ -11,7 +11,7 @@ public class MainActivity extends BaseActivity {
 
 
     @Override
-    public int getContentView() {
+    public int getLayoutID() {
         return R.layout.main_act;
     }
 
